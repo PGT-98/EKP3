@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>지도 API</title>
+</head>
+<body>
+	<div id="map" style="width:100%;height:100vh;"></div>
+
+	<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=6bad31f47ee21e44ebf713e0df243858&libraries=clusterer"></script>
+	<script>
+		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+		    mapOption = {
+		        center: new kakao.maps.LatLng(37.553186, 126.971949), // 지도의 중심좌표
+		        level: 8, // 지도의 확대 레벨
+		        mapTypeId : kakao.maps.MapTypeId.ROADMAP // 지도종류
+		    }; 
+
+		// 지도를 생성한다 
+		var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+		// 마커 클러스터러를 생성합니다 
+    var clusterer = new kakao.maps.MarkerClusterer({
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
+        minLevel: 10 // 클러스터 할 최소 지도 레벨 
+    });
+
+var 데이터 = [
+			[37.513752, 126.939254, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.529736, 126.964708, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.522229, 126.973770, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+			[37.542496428902176, 126.84090802594365, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.53244782458039, 126.84653379575448, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.46677486119297, 126.66847744175305, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+			[37.67607838779212, 126.74779871278194, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.670389795086216, 126.76104685325737, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.65975999543531, 126.77338545696175, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+			[36.362884017480994, 127.42321934077175, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.88737093783252, 127.7319853197858, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.867224471303345, 127.73222334903345, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+			[37.39497202555192, 127.11103125136606, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.284903113838254, 126.98979134657407, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.28394705143876, 126.9988893999936, '<div style="padding:5px;">[지쿠터]]<br>기본:300원<br>전원:80%</div>'],
+			[37.27036524168518, 126.95421813410728, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.15008442491138, 127.07750348390593, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.15474504413021, 127.08197122304426, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+			[37.31613177394657, 126.83854272623879, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.310524121475055, 126.8534405546145, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.31078275147862, 126.827050220567, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+			[37.65633477332537, 127.06323878849658, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.65483983098339, 127.06157581882674, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.65405231900456, 127.04779596321988, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+			[37.63077800708365, 127.02021669555747, '<div style="padding:5px;">[씽씽]<br>기본:700원<br>전원:70%</div>'],
+			[37.62576982139951, 127.02895752065066, '<div style="padding:5px;">[킥고잉]<br>기본:1000원<br>전원:50%</div>'],
+			[37.61381647024412, 127.15367483977859, '<div style="padding:5px;">[지쿠터]<br>기본:300원<br>전원:80%</div>'],
+];
+
+var markers = [];
+
+for (var i=0; i < 데이터. length; i++){
+	// 마커를 생성합니다
+var marker = new kakao.maps.Marker({
+    position: new kakao.maps.LatLng(데이터[i][0], 데이터[i][1])
+});
+
+marker.setMap(map);
+
+// 마커가 지도 위에 표시되도록 설정합니다
+
+
+var iwPosition = new kakao.maps.LatLng(데이터[i][0], 데이터[i][1]); //인포윈도우 표시 위치입니다
+
+// 인포윈도우를 생성합니다
+var infowindow = new kakao.maps.InfoWindow({
+	position : iwPosition,
+    content: 데이터[i][2]
+	});
+	
+
+	markers.push(marker);
+	kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+  kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+
+}
+// 클러스터러에 마커들을 추가합니다
+clusterer.addMarkers(markers);
+
+
+// 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+function makeOverListener(map, marker, infowindow) {
+    return function() {
+        infowindow.open(map, marker);
+    };
+}
+
+// 인포윈도우를 닫는 클로저를 만드는 함수입니다 
+function makeOutListener(infowindow) {
+    return function() {
+        infowindow.close();
+    };
+}
+
+	</script>
+</body>
+</html>
